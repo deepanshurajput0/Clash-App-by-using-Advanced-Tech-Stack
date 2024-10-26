@@ -3,7 +3,7 @@ import 'dotenv/config'
 import path from 'path'
 import { fileURLToPath } from 'url'
 const _dirname = path.dirname(fileURLToPath(import.meta.url))
-import ejs from 'ejs'
+import ejs, { name } from 'ejs'
 import { sendEmail } from './config/mail.js'
 
 const app:Application = express()
@@ -21,13 +21,23 @@ app.get('/',async(req:Request,res:Response)=>{
         name:"Deepanshu"
     }) 
     await sendEmail("kebade2664@bulatox.com",'Testing SMTP',html)
+    await emailQueue.add(emailQueueName,{to:'kebade2664@bulatox.com', subject:'Testing queue email', body:html})
     //  res.render('emails/welcome',{name:"Deepanshu"});
      res.json({msg:"Email send successfully"})
 })
 
+import './jobs/index.js'
+import { emailQueue, emailQueueName } from './jobs/EmailJob.js'
+
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`)
 })
+
+
+
+
+
+
 
 
 
