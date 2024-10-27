@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 const _dirname = path.dirname(fileURLToPath(import.meta.url))
 import ejs, { name } from 'ejs'
 import { sendEmail } from './config/mail.js'
+import Routes from './routes/index.js'
 
 const app:Application = express()
 
@@ -15,6 +16,8 @@ app.use(express.json())
 
 app.set('view engine', 'ejs')
 app.set('views', path.resolve(_dirname,'./views'))
+
+app.use(Routes)
 
 app.get('/',async(req:Request,res:Response)=>{
     const html = await ejs.renderFile(_dirname + `/views/emails/welcome.ejs`,{
