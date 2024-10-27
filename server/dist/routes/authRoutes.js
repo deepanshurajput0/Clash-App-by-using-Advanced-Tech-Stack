@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import { registerSchema } from '../validation/authValidations.js';
 import { ZodError } from 'zod';
-import { formatError } from '../helper.js';
+import { formatError, renderEmailEjs } from '../helper.js';
 import bcrypt from 'bcrypt';
 import prisma from '../config/database.js';
+import { v4 as uudi4 } from 'uuid';
+import { emailQueue, emailQueueName } from '../jobs/EmailJob.js';
 const router = Router();
 router.post('/register', async (req, res) => {
     try {
@@ -20,15 +22,20 @@ router.post('/register', async (req, res) => {
             });
         }
         payload.password = await bcrypt.hash(payload.password, 10);
+        const token = await bcrypt.hash(uudi4(), 10);
+        const url = `${process.env.APP_URL}/verify-email?email=${payload.email}&token=${token}`;
+        const emailBody = await renderEmailEjs('email-verify', { name: payload.name, url: url });
+        await emailQueue.add(emailQueueName, { to: payload.email, subject: 'Clash Email Verification', body: emailBody });
         await prisma.user.create({
             data: {
                 name: payload.name,
                 email: payload.email,
-                password: payload.password
+                password: payload.password,
+                email_verify_token: token
             }
         });
         return res.json({
-            message: 'Account created successfully'
+            message: 'Please check your email. we have sent you a verification email'
         });
     }
     catch (error) {
