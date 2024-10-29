@@ -1,8 +1,9 @@
 import React from 'react'
 import { Label } from '@radix-ui/react-label'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+
 import Link from 'next/link'
+import { SubmitButton } from '@/components/common/SubmitBtn'
 export default function login() {
   return (
     <div className=' flex justify-center items-center h-screen' >
@@ -25,7 +26,7 @@ export default function login() {
              </Link>
           </div>
           <div className=' mt-4'>
-              <Button className=' w-full' >Submit</Button>
+             <SubmitButton/>
           </div>
        </form>
        <p className=' text-center mt-2' >
