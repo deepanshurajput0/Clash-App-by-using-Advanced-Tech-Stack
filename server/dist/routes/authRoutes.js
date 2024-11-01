@@ -1,12 +1,73 @@
 import { Router } from 'express';
-import { registerSchema } from '../validation/authValidations.js';
+import { loginSchema, registerSchema } from '../validation/authValidations.js';
 import { ZodError } from 'zod';
 import { formatError, renderEmailEjs } from '../helper.js';
 import bcrypt from 'bcrypt';
 import prisma from '../config/database.js';
 import { v4 as uudi4 } from 'uuid';
 import { emailQueue, emailQueueName } from '../jobs/EmailJob.js';
+import jwt from 'jsonwebtoken';
+import authMiddleware from '../middleware/AuthMiddleware.js';
 const router = Router();
+router.post('/login', async (req, res) => {
+    try {
+        const body = req.body;
+        const payload = loginSchema.parse(body);
+        // check email 
+        const user = await prisma.user.findUnique({ where: { email: payload.email } });
+        if (!user || user === null) {
+            return res.status(422).json({ errors: { email: 'No user found with this email' } });
+        }
+        const compare = await bcrypt.compare(payload.password, user.password);
+        if (!compare) {
+            return res.status(422).json({ errors: { email: 'Invalid Credentials' } });
+        }
+        const JWTPayload = {
+            id: user.id,
+            name: user.name,
+            email: user.email
+        };
+        const token = jwt.sign(JWTPayload, process.env.SECRET_KEY, { expiresIn: '365d' });
+        return res.json({
+            message: 'Logged in Successfully',
+            data: {
+                ...JWTPayload, token: `Bearer ${token}`
+            }
+        });
+    }
+    catch (error) {
+        if (error instanceof ZodError) {
+            const errors = formatError(error);
+            return res.status(422).json({ message: 'Invalid Data', errors });
+        }
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+router.post('/check/credentials', async (req, res) => {
+    try {
+        const body = req.body;
+        const payload = loginSchema.parse(body);
+        // check email 
+        const user = await prisma.user.findUnique({ where: { email: payload.email } });
+        if (!user || user === null) {
+            return res.status(422).json({ errors: { email: 'No user found with this email' } });
+        }
+        const compare = await bcrypt.compare(payload.password, user.password);
+        if (!compare) {
+            return res.status(422).json({ errors: { email: 'Invalid Credentials' } });
+        }
+        return res.json({
+            message: 'Logged in Successfully'
+        });
+    }
+    catch (error) {
+        if (error instanceof ZodError) {
+            const errors = formatError(error);
+            return res.status(422).json({ message: 'Invalid Data', errors });
+        }
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 router.post('/register', async (req, res) => {
     try {
         const body = req.body;
@@ -45,5 +106,9 @@ router.post('/register', async (req, res) => {
         }
         return res.status(500).json({ message: 'Internal Server Error' });
     }
+});
+router.get('/user', authMiddleware, async (req, res) => {
+    const user = req.user;
+    return res.json({ data: user });
 });
 export default router;
