@@ -8,11 +8,12 @@ import { v4 as uudi4 } from 'uuid'
 import { emailQueue, emailQueueName } from '../jobs/EmailJob.js';
 import jwt from 'jsonwebtoken'
 import authMiddleware from '../middleware/AuthMiddleware.js';
+import { authlimiter } from '../config/ratelimit.js';
 const router = Router()
 
 
 
-router.post('/login',async(req:Request,res:Response)=>{
+router.post('/login',authlimiter,async(req:Request,res:Response)=>{
    try {
     const body = req.body
     const payload = loginSchema.parse(body)
@@ -48,7 +49,7 @@ router.post('/login',async(req:Request,res:Response)=>{
    }
 })
 
-router.post('/check/credentials',async(req:Request,res:Response)=>{
+router.post('/check/credentials',authlimiter,async(req:Request,res:Response)=>{
    try {
     const body = req.body
     const payload = loginSchema.parse(body)
@@ -76,7 +77,7 @@ router.post('/check/credentials',async(req:Request,res:Response)=>{
 })
 
 
-router.post('/register',async(req:Request,res:Response)=>{
+router.post('/register',authlimiter,async(req:Request,res:Response)=>{
     try {
     const body = req.body;
     const payload = registerSchema.parse(body)

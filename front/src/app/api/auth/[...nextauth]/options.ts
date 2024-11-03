@@ -45,7 +45,6 @@ export const authOptions = {
     async authorize(credentials,req){
       const { data } = await axios.post(LOGIN_URL,credentials)
       const user = data?.data
-      
        if(user){
          return user
        }else{
@@ -57,4 +56,3 @@ export const authOptions = {
   ],
 }
 
-export default NextAuth(authOptions)

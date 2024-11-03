@@ -16,7 +16,7 @@ app.use(express.json())
 
 app.set('view engine', 'ejs')
 app.set('views', path.resolve(_dirname,'./views'))
-
+app.use(applimiter)
 app.use(Routes)
 
 app.get('/',async(req:Request,res:Response)=>{
@@ -31,6 +31,7 @@ app.get('/',async(req:Request,res:Response)=>{
 
 import './jobs/index.js'
 import { emailQueue, emailQueueName } from './jobs/EmailJob.js'
+import { applimiter } from './config/ratelimit.js'
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`)
