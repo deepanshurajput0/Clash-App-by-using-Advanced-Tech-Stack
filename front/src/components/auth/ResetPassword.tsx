@@ -1,6 +1,6 @@
 "use client";
 import { Label } from "@radix-ui/react-label";
-import { registerAction } from "@/actions/authActions";
+import { registerAction, resetPasswordAction } from "@/actions/authActions";
 import { Input } from "../ui/input";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -16,7 +16,7 @@ export default function ResetPassword() {
     errors: {},
   };
 
-  const [state, formAction] = useActionState(registerAction, initState);
+  const [state, formAction] = useActionState(resetPasswordAction, initState);
   const sParams = useSearchParams()
   useEffect(() => {
     if (state.status === 500) {
@@ -28,6 +28,7 @@ export default function ResetPassword() {
   return (
     <form action={formAction}>
       <div className="mt-4">
+        <input type="hidden" name="token" value={sParams.get('token') ?? ''}  />
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"
