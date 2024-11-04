@@ -35,7 +35,9 @@ model Clash {
   user_id Int
   title String
   description String
+  expire_at DateTime
   created_at DateTime @default(now())
+
 }
 
 
