@@ -5,10 +5,17 @@ import { fileURLToPath } from 'url';
 const _dirname = path.dirname(fileURLToPath(import.meta.url));
 import ejs from 'ejs';
 import { sendEmail } from './config/mail.js';
+import fileUpload from 'express-fileupload';
 import Routes from './routes/index.js';
 const app = express();
 const PORT = process.env.PORT || 8080;
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static("public"));
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+}));
 app.set('view engine', 'ejs');
 app.set('views', path.resolve(_dirname, './views'));
 app.use(applimiter);

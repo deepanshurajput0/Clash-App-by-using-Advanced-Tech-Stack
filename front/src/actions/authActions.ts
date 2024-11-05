@@ -1,6 +1,6 @@
 'use server'
 
-import { CHECK_URL, FORGET_PASSWORD_URL, LOGIN_URL, REGISTER_URL, RESET_PASSWORD_URL } from "@/lib/apiEndPoints"
+import { CHECK_URL, FORGET_PASSWORD_URL, REGISTER_URL, RESET_PASSWORD_URL } from "@/lib/apiEndPoints"
 import axios, { AxiosError } from "axios"
 
 export async function registerAction(prevState:any,formData:FormData){

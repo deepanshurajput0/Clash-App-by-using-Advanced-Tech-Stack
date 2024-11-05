@@ -47,8 +47,8 @@ export const bytesToMB =(bytes:number):number=>{
 }
 
 export const uploadedFile = async(image:UploadedFile)=>{
-    const imgExt = image.name.split(".")[1]
-    const imageName = uuid4() + '.' + imgExt[1]
+    const imgExt = image?.name.split(".")
+    const imageName = uuid4() + "." + imgExt[1]
     const uploadPath = process.cwd() + '/public/images/' + imageName
     image.mv(uploadPath,(err)=>{
       if(err) throw err

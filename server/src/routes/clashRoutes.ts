@@ -8,9 +8,29 @@ import prisma from '../config/database.js'
 const router = Router()
 
 
+
+router.get('/',async(req:Request,res:Response)=>{
+    try {
+        const clash = await prisma.clash.findMany({
+            where:{
+                user_id:req.user?.id
+            },
+        })
+        return res.json({message:'Clashed fetched successfully',data:clash})
+    } catch (error) {
+        if(error instanceof ZodError){
+            const errors = formatError(error)
+            return res.status(422).json({message:'Invalid Data',errors})
+        }
+     return res.status(500).json({message:'Internal Server Error'})
+    }
+})
+
+
 router.post('/create', async(req:Request,res:Response)=>{
     try {
         const body = req.body
+        console.log(body)
         const payload = clashSchema.parse(body)
         
         if(req.files?.image){
@@ -23,6 +43,7 @@ router.post('/create', async(req:Request,res:Response)=>{
         }else{
             return res.status(422).json({errors:{image:'Image field is required'}})
         }
+      
        await prisma.clash.create({
         data:{
             ...payload,
