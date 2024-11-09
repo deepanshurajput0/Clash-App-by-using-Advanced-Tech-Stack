@@ -9,8 +9,15 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
+import { signOut } from 'next-auth/react'
   
 export default function LogoutModal({open,setOpen}:{open:boolean,setOpen:Dispatch<SetStateAction<boolean>>}) {
+  const logoutUser =()=>{
+    signOut({
+      callbackUrl:"/",
+      redirect:true
+    })
+  }
   return (
     <AlertDialog open={open} onOpenChange={setOpen} >
   <AlertDialogContent>
@@ -22,7 +29,7 @@ export default function LogoutModal({open,setOpen}:{open:boolean,setOpen:Dispatc
     </AlertDialogHeader>
     <AlertDialogFooter>
       <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction> Yes Continue</AlertDialogAction>
+      <AlertDialogAction onClick={logoutUser} > Yes Continue</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>
