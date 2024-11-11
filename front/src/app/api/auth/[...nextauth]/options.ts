@@ -1,10 +1,9 @@
 import { LOGIN_URL } from "@/lib/apiEndPoints"
 import axios from "axios"
-import { AuthOptions, ISODateString } from "next-auth"
-import NextAuth from "next-auth"
+import {  ISODateString } from "next-auth"
 import { JWT } from "next-auth/jwt"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { signIn } from "next-auth/react"
+
 
 export type CustomSession = {
     user:CustomUser,
