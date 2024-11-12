@@ -25,6 +25,7 @@ import axios, { AxiosError } from 'axios'
 import { CLASH_URL } from '@/lib/apiEndPoints'
 import { CustomUser } from '@/app/api/auth/[...nextauth]/options'
 import { toast } from 'sonner'
+import { clearCache } from '@/actions/commonActions'
   
 export default function EditClash({user,clash,open,setOpen,token}:{user:CustomUser,clash:ClashType,open:boolean,setOpen:boolean,token:string}) {
     const [clashData, setClashData] = useState<ClassFromType>({
@@ -54,6 +55,7 @@ export default function EditClash({user,clash,open,setOpen,token}:{user:CustomUs
       }})
       setLoading(false)
       if(data?.message){
+        clearCache('dashboard')
         setClashData({})
         setDate(null)
         setImage(null)
