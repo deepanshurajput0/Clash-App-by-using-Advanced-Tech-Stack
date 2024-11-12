@@ -11,7 +11,7 @@ import { Button } from '../ui/button'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Textarea } from "@/components/ui/textarea"
-import { ClassFromType, ClassFromTypeError } from '@/types'
+import { ClashType, ClassFromType, ClassFromTypeError } from '@/types'
 import { Calendar as CalendarIcon } from "lucide-react"
  
 import { cn } from "@/lib/utils"
@@ -26,10 +26,12 @@ import { CLASH_URL } from '@/lib/apiEndPoints'
 import { CustomUser } from '@/app/api/auth/[...nextauth]/options'
 import { toast } from 'sonner'
   
-export default function AddClash({user}:{user:CustomUser}) {
-    const [open, setOpen] = useState<boolean>(false)
-    const [clashData, setClashData] = useState<ClassFromType>({})
-    const [date, setDate] = React.useState<Date | null >(null)
+export default function EditClash({user,clash,open,setOpen,token}:{user:CustomUser,clash:ClashType,open:boolean,setOpen:boolean,token:string}) {
+    const [clashData, setClashData] = useState<ClassFromType>({
+        title:clash.title,
+        description:clash.description
+    })
+    const [date, setDate] = React.useState<Date | null >(new Date(clash.expire_at!))
     const [image,setImage] = useState<File | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
     const [errors, setErrors] = useState<ClassFromTypeError>({}) 
@@ -46,16 +48,16 @@ export default function AddClash({user}:{user:CustomUser}) {
       formData.append('description',clashData.description ?? '')
       formData.append('expire_at',date?.toISOString() ?? '')
       if(image) formData.append('image',image)
-        const { data } = await axios.post(`${CLASH_URL}/create`,formData,{
+        const { data } = await axios.put(`${CLASH_URL}/${clash.id}`,formData,{
       headers:{
-        Authorization:user.token
+        Authorization:token
       }})
       setLoading(false)
       if(data?.message){
         setClashData({})
         setDate(null)
         setImage(null)
-        toast.success('Clash Added Successfully')
+        toast.success(data.message)
         setOpen(false)
       }
     } catch (error) {
@@ -72,7 +74,6 @@ export default function AddClash({user}:{user:CustomUser}) {
   return (
     <Dialog open={open} onOpenChange={setOpen} >
   <DialogTrigger asChild >
-    <Button>Add Clash</Button>
   </DialogTrigger>
   <DialogContent onInteractOutside={(e)=>e.preventDefault()} >
     <DialogHeader>
@@ -125,7 +126,7 @@ export default function AddClash({user}:{user:CustomUser}) {
         <Calendar
           mode="single"
           selected={date ?? new Date() }
-          onSelect={setDate}
+          onSelect={(date)=>setDate(date!)}
         />
       </PopoverContent>
     </Popover>
