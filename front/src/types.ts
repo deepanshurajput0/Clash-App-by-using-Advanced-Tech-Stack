@@ -18,6 +18,10 @@ export type ClashType ={
     image?:string
 }
 
+export type ClashItemForm = {
+    image: File | null,
+
+}
 
 
 

@@ -39,7 +39,7 @@ export default function ClashCard({clash,token}:{clash:ClashType,token:string}) 
     </p>
   </CardContent>
   <CardFooter>
-    <Link href={`/clash/${clash.id}`} >
+    <Link href={`/clash/item/${clash.id}`} >
     <Button>Items</Button>
     </Link>
   </CardFooter>
