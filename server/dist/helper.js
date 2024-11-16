@@ -34,7 +34,7 @@ export const ImageValidator = (size, mime) => {
 export const bytesToMB = (bytes) => {
     return bytes / (1024 * 1024);
 };
-export const uploadedFile = async (image) => {
+export const uploadedFile = (image) => {
     const imgExt = image?.name.split(".");
     const imageName = uuid4() + "." + imgExt[1];
     const uploadPath = process.cwd() + '/public/images/' + imageName;

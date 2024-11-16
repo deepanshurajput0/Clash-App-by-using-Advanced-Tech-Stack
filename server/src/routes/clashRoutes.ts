@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express'
 import { ZodError } from 'zod'
 import { formatError, ImageValidator, removeImage, uploadedFile } from '../helper.js'
 import { clashSchema } from '../validation/clashValidation.js'
-import { UploadedFile } from 'express-fileupload'
+import { FileArray, UploadedFile } from 'express-fileupload'
 import prisma from '../config/database.js'
 import authMiddleware from '../middleware/AuthMiddleware.js'
 
@@ -152,6 +152,35 @@ router.put('/:id', authMiddleware ,async(req:Request,res:Response)=>{
      return res.status(500).json({message:'Internal Server Error'})
     }
 })
+
+
+router.post('/items',authMiddleware,async(req:Request,res:Response) =>{
+      const { id } = req.body
+      const files:FileArray | null | undefined = req.files
+      let imageErrors:Array<string> = []
+      const images = files?.['images[]'] as UploadedFile[]
+      if(images.length >= 2){
+         images.map((img)=>{
+            const validImg = ImageValidator(img.size, img.mimetype)
+            if(validImg) imageErrors.push(validImg)
+         })
+
+         if(imageErrors.length > 0){
+            return res.status(422).json({errors:imageErrors})
+         }
+         let uploadedImage:string[] = []
+         images.map((img)=>{
+            uploadedImage.push(uploadedFile(img))
+         })
+         uploadedImage.map(async(item)=>{
+        
+         })
+      }
+
+      return res.status(422).json({errors:['Please select at least 2 images for Clashing ']})
+
+})
+
 
 export default router
 

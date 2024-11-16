@@ -145,4 +145,27 @@ router.put('/:id', authMiddleware, async (req, res) => {
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+router.post('/items', authMiddleware, async (req, res) => {
+    const { id } = req.body;
+    const files = req.files;
+    let imageErrors = [];
+    const images = files?.['images[]'];
+    if (images.length >= 2) {
+        images.map((img) => {
+            const validImg = ImageValidator(img.size, img.mimetype);
+            if (validImg)
+                imageErrors.push(validImg);
+        });
+        if (imageErrors.length > 0) {
+            return res.status(422).json({ errors: imageErrors });
+        }
+        let uploadedImage = [];
+        images.map((img) => {
+            uploadedImage.push(uploadedFile(img));
+        });
+        uploadedImage.map(async (item) => {
+        });
+    }
+    return res.status(422).json({ errors: ['Please select at least 2 images for Clashing '] });
+});
 export default router;
