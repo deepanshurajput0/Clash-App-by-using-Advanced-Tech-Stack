@@ -7,7 +7,7 @@ const router = Router()
 
 router.use('/api/auth',AuthRoutes)
 router.use('/api/auth',PasswordRoutes)
-router.use('/api/clash', authMiddleware ,ClashRoutes )
+router.use('/api/clash' ,ClashRoutes )
 export default router
 
 

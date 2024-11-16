@@ -4,12 +4,13 @@ import { formatError, ImageValidator, removeImage, uploadedFile } from '../helpe
 import { clashSchema } from '../validation/clashValidation.js'
 import { UploadedFile } from 'express-fileupload'
 import prisma from '../config/database.js'
+import authMiddleware from '../middleware/AuthMiddleware.js'
 
 const router = Router()
 
 
 
-router.get('/',async(req:Request,res:Response)=>{
+router.get('/',authMiddleware,async(req:Request,res:Response)=>{
     try {
         const clash = await prisma.clash.findMany({
             where:{
@@ -25,7 +26,7 @@ router.get('/',async(req:Request,res:Response)=>{
      return res.status(500).json({message:'Internal Server Error'})
     }
 })
-router.delete('/:id',async(req:Request,res:Response)=>{
+router.delete('/:id',authMiddleware,async(req:Request,res:Response)=>{
     try {
         const { id } = req.params
         const clash = await prisma.clash.findUnique({
@@ -73,7 +74,7 @@ router.get('/:id',async(req:Request,res:Response)=>{
 })
 
 
-router.post('/create', async(req:Request,res:Response)=>{
+router.post('/create', authMiddleware ,async(req:Request,res:Response)=>{
     try {
         const body = req.body
         console.log(body)
@@ -107,7 +108,7 @@ router.post('/create', async(req:Request,res:Response)=>{
      return res.status(500).json({message:'Internal Server Error'})
     }
 })
-router.put('/:id', async(req:Request,res:Response)=>{
+router.put('/:id', authMiddleware ,async(req:Request,res:Response)=>{
     try {
         const { id } = req.params
         const body = req.body

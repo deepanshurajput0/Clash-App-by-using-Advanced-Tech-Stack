@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { Inter as FontSans } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
 import "./globals.css";

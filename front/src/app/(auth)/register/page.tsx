@@ -1,7 +1,15 @@
 import React from "react";
 import Link from "next/link";
 import Register from "@/components/auth/Register";
-export default function register() {
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
+export default async function register() {
+  const session = await getServerSession(authOptions)
+  if(session){
+    redirect('/dashboard')
+  }
+
   return (
     <div className=" flex justify-center items-center h-screen">
       <div className=" w-[550px] bg-white rounded-xl py-5 shadow-md space-y-2 pl-5 pr-5">

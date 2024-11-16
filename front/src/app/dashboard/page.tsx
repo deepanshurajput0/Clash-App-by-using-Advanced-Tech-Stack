@@ -4,7 +4,7 @@ import AddClash from '@/components/clash/AddClash'
 import { getServerSession } from 'next-auth'
 import { authOptions, CustomSession } from '../api/auth/[...nextauth]/options'
 import { ClashType } from '@/types'
-import fetchClashes from '../fetch/clashFetch'
+import fetchClashes from '@/fetch/clashFetch'
 import ClashCard from '@/components/clash/ClashCard'
 export default async function dashboard() {
   const session:CustomSession | null = await getServerSession(authOptions)

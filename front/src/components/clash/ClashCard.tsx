@@ -13,6 +13,7 @@ import Image from 'next/image'
 import { getImageUrl } from '@/lib/utils'
 import { Button } from '../ui/button'
 import ClashCardMenu from './ClashCardMenu'
+import Link from 'next/link'
 
 export default function ClashCard({clash,token}:{clash:ClashType,token:string}) {
   return (
@@ -34,11 +35,13 @@ export default function ClashCard({clash,token}:{clash:ClashType,token:string}) 
     <p>{clash.description}</p>
     <p>
         <strong>Expire At</strong>
-        {new Date(clash.expire_at).toDateString()}
+        {new Date(clash.expire_at!).toDateString()}
     </p>
   </CardContent>
   <CardFooter>
+    <Link href={`/clash/${clash.id}`} >
     <Button>Items</Button>
+    </Link>
   </CardFooter>
 </Card>
 

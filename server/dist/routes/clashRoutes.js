@@ -3,8 +3,9 @@ import { ZodError } from 'zod';
 import { formatError, ImageValidator, removeImage, uploadedFile } from '../helper.js';
 import { clashSchema } from '../validation/clashValidation.js';
 import prisma from '../config/database.js';
+import authMiddleware from '../middleware/AuthMiddleware.js';
 const router = Router();
-router.get('/', async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
     try {
         const clash = await prisma.clash.findMany({
             where: {
@@ -21,7 +22,7 @@ router.get('/', async (req, res) => {
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         const clash = await prisma.clash.findUnique({
@@ -68,7 +69,7 @@ router.get('/:id', async (req, res) => {
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-router.post('/create', async (req, res) => {
+router.post('/create', authMiddleware, async (req, res) => {
     try {
         const body = req.body;
         console.log(body);
@@ -101,7 +102,7 @@ router.post('/create', async (req, res) => {
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-router.put('/:id', async (req, res) => {
+router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         const body = req.body;
