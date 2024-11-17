@@ -58,6 +58,25 @@ router.get('/:id', async (req, res) => {
             where: {
                 id: Number(id)
             },
+            include: {
+                ClashItem: {
+                    select: {
+                        image: true,
+                        id: true,
+                        count: true
+                    }
+                },
+                ClashComments: {
+                    select: {
+                        id: true,
+                        comment: true,
+                        created_at: true
+                    },
+                    orderBy: {
+                        id: 'desc'
+                    }
+                }
+            }
         });
         return res.json({ message: 'Clashed fetched successfully', data: clash });
     }

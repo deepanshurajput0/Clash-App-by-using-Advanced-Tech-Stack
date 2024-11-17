@@ -15,12 +15,26 @@ export type ClashType ={
     title?:string,
     description?:string,
     expire_at?:string ,
-    image?:string
+    image?:string,
+    ClashItem:Array<ClashItem>,
+    ClashComments:Array<ClashComments>,
 }
 
 export type ClashItemForm = {
     image: File | null,
 
+}
+
+export type ClashItem ={
+    id:number,
+    count:number,
+    image:string
+}
+
+export type ClashComments ={
+    id:number,
+    comment:number,
+    created_at:string
 }
 
 

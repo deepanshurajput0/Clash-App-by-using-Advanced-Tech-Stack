@@ -1,6 +1,7 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 import Navbar from '@/components/base/Navbar';
 import AddClashItems from '@/components/clash/AddClashItems';
+import ViewClashItems from '@/components/clash/ViewClashItems';
 import { fetchClash } from '@/fetch/clashFetch';
 import { ClashType } from '@/types';
 import { getServerSession } from 'next-auth';
@@ -28,7 +29,12 @@ export default async function ClashItems({ params }: { params: { id: number } })
         <h1 className="text-2xl lg:text-4xl font-extrabold">{clash.title}</h1>
         <p className="text-lg">{clash.description}</p>
       </div>
-      <AddClashItems token={session?.user?.token!} clashId={id} />
+      {
+        clash.ClashItem && clash.ClashItem.length > 0 ? <> 
+        <ViewClashItems clash={clash} />
+         </> : <AddClashItems token={session?.user?.token!} clashId={id} />
+      }
+      
     </div>
   );
 }
