@@ -164,7 +164,14 @@ router.post('/items', authMiddleware, async (req, res) => {
             uploadedImage.push(uploadedFile(img));
         });
         uploadedImage.map(async (item) => {
+            await prisma.clashItem.create({
+                data: {
+                    image: item,
+                    clash_id: Number(id)
+                }
+            });
         });
+        return res.json({ message: 'Clash Items updated successfully' });
     }
     return res.status(422).json({ errors: ['Please select at least 2 images for Clashing '] });
 });
