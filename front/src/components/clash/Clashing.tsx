@@ -4,10 +4,13 @@ import { ClashType } from '@/types'
 import Image from 'next/image'
 import React, { Fragment, useState } from 'react'
 import CountUp from 'react-countup'
+import { Textarea } from '../ui/textarea'
+import { Button } from '../ui/button'
 
-export default function ViewClashItems({clash}:{clash:ClashType}) {
+export default function Clashing({clash}:{clash:ClashType}) {
     const [clashComments, setClashComments] = useState(clash.ClashComments)
     const [clashItems, setClashItems] = useState(clash.ClashItem)
+    const [comment, setComment] = useState("")
   return (
     <div className=' mt-10' >
        <div className=' flex flex-wrap lg:flex-nowrap justify-between items-center' >
@@ -46,6 +49,14 @@ export default function ViewClashItems({clash}:{clash:ClashType}) {
         }
        </div>
        {/* /// Comments  */}
+
+       <form className=' mt-2 w-full p-10 space-y-6' >
+        <Textarea placeholder='Type your suggestions...' 
+        value={comment}
+        onChange={(e)=>setComment(e.target.value)}
+        />
+         <Button className=' w-full mt-2' > Submit Comment </Button>
+       </form>
        {
          clashComments && clashComments.length > 0 && clashComments.map((item,index)=>
         <div className=' w-full md:w-[600px] rounded-lg p-4 bg-muted mb-4' key={index} >
