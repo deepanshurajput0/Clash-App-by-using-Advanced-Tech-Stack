@@ -8,6 +8,7 @@ import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
 import { ThumbsUp } from 'lucide-react'
 import socket from '@/lib/socket'
+import { toast } from 'sonner'
 
 export default function Clashing({clash}:{clash:ClashType}) {
     const [clashComments, setClashComments] = useState(clash.ClashComments)
@@ -30,6 +31,9 @@ export default function Clashing({clash}:{clash:ClashType}) {
       socket.on(`clashing-${clash.id}`,(data)=>{
         updateCounter(data?.clashItemId)
       })
+      socket.on(`clashing_comment-${clash.id}`,(data)=>{
+        updateComment(data)
+      })
     })
     
 
@@ -40,6 +44,31 @@ export default function Clashing({clash}:{clash:ClashType}) {
       setClashItems(updatedItems);
     };
     
+    const updateComment =(payload:any)=>{
+        if(clashComments && clashComments.length > 0){
+          setClashComments([payload, ...clashComments])
+        }else{
+          setClashComments([payload])
+        }
+    }
+
+
+    const handleSubmit =(event:React.FormEvent)=>{
+       event.preventDefault()
+       if(comment.length > 2){
+        const payload = {
+          id:clash.id,
+          comment:comment,
+          created_at: new Date().toDateString()
+        }
+       
+        socket.emit(`clashing_comment-${clash.id}`,payload)
+        updateComment(payload)
+        setComment('')
+       }else{
+        toast.warning("Please type atleast 2 words")
+       }
+    }
 
   return (
     <div className=' mt-10' >
@@ -85,7 +114,7 @@ export default function Clashing({clash}:{clash:ClashType}) {
        </div>
        {/* /// Comments  */}
 
-       <form className=' mt-2 w-full p-10 space-y-6' >
+       <form onSubmit={handleSubmit}  className=' mt-2 w-full p-10 space-y-6' >
         <Textarea placeholder='Type your suggestions...' 
         value={comment}
         onChange={(e)=>setComment(e.target.value)}

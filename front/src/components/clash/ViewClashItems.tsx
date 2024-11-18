@@ -15,9 +15,22 @@ export default function ViewClashItems({clash}:{clash:ClashType}) {
       );
       setClashItems(updatedItems);
     };
+
+    const updateComment =(payload:any)=>{
+      if(clashComments && clashComments.length > 0){
+        setClashComments([payload, ...clashComments])
+      }else{
+        setClashComments([payload])
+      }
+  }
+
     useEffect(()=>{
       socket.on(`clashing-${clash.id}`,(data)=>{
         updateCounter(data?.clashItemId)
+      })
+      socket.on(`clashing_comment-${clash.id}`,(data)=>{
+        console.log('hii am getting comment',data)
+        updateComment(data)
       })
     })
 
