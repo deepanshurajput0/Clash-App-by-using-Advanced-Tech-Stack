@@ -8,7 +8,18 @@ import { sendEmail } from './config/mail.js';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
 import Routes from './routes/index.js';
+import { Server } from 'socket.io';
+import { setupSocket } from './socket.js';
+import { createServer } from 'http';
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: process.env.CLIENT_APP_URL
+    }
+});
+export { io };
+setupSocket(io);
 const PORT = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cors());
@@ -34,6 +45,6 @@ app.get('/', async (req, res) => {
 import './jobs/index.js';
 import { emailQueue, emailQueueName } from './jobs/EmailJob.js';
 import { applimiter } from './config/ratelimit.js';
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

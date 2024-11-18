@@ -8,8 +8,23 @@ import { sendEmail } from './config/mail.js'
 import cors from 'cors'
 import fileUpload from 'express-fileupload'
 import Routes from './routes/index.js'
-
+import { Server } from 'socket.io'
+import { setupSocket } from './socket.js'
+import { createServer, Server as HttpServer } from 'http'
 const app:Application = express()
+
+const server:HttpServer = createServer(app)
+
+const io = new Server(server,{
+    cors:{
+        origin:process.env.CLIENT_APP_URL
+    }
+})
+
+export { io }
+
+setupSocket(io)
+
 
 const PORT = process.env.PORT || 8080
 
@@ -43,7 +58,7 @@ import './jobs/index.js'
 import { emailQueue, emailQueueName } from './jobs/EmailJob.js'
 import { applimiter } from './config/ratelimit.js'
 
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`)
 })
 

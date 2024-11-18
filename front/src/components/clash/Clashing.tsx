@@ -2,15 +2,45 @@
 import { getImageUrl } from '@/lib/utils'
 import { ClashType } from '@/types'
 import Image from 'next/image'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import CountUp from 'react-countup'
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
+import { ThumbsUp } from 'lucide-react'
+import socket from '@/lib/socket'
 
 export default function Clashing({clash}:{clash:ClashType}) {
     const [clashComments, setClashComments] = useState(clash.ClashComments)
     const [clashItems, setClashItems] = useState(clash.ClashItem)
+    const [hideVote, setHideVote] = useState(false)
     const [comment, setComment] = useState("")
+
+    const handleVote = (id: number) => {
+      if (clashItems && clashItems.length > 0) {
+        setHideVote(true);
+        updateCounter(id);
+        socket.emit(`clashing-${clash.id}`,{
+          clashId:clash.id,
+          clashItemId:id
+        })
+      }
+    };
+
+    useEffect(()=>{
+      socket.on(`clashing-${clash.id}`,(data)=>{
+        updateCounter(data?.clashItemId)
+      })
+    })
+    
+
+    const updateCounter = (id: number) => {
+      const updatedItems = clashItems.map((item) => 
+        item.id === id ? { ...item, count: item.count + 1 } : item
+      );
+      setClashItems(updatedItems);
+    };
+    
+
   return (
     <div className=' mt-10' >
        <div className=' flex flex-wrap lg:flex-nowrap justify-between items-center' >
@@ -29,12 +59,17 @@ export default function Clashing({clash}:{clash:ClashType}) {
                 className="w-full h-[300px] object-contain"
               />
           </div>
-          <CountUp 
-          start={0}
-          end={item.count}
-          duration={0.5}
-          className=' text-5xl font-extrabold '
-          />
+        
+
+          {
+            hideVote ?   <CountUp 
+            start={0}
+            end={item.count}
+            duration={0.5}
+            className=' text-5xl font-extrabold '
+            /> :  <Button onClick={()=>handleVote(item.id)} className=' mt-3' >Vote <span> <ThumbsUp /> </span> </Button>
+          }
+         
         </div>
 
         {
