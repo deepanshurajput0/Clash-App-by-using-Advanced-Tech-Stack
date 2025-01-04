@@ -41,8 +41,7 @@ Welcome to **Clash App**, a cutting-edge real-time voting platform where users c
 
 #### **1. Clone the Repository**  
 ```bash
-git clone https://github.com/your-username/clash-app.git
-cd clash-app
+git clone https://github.com/deepanshurajput0/Clash-App-by-using-Advanced-Tech-Stack/tree/main
 ```
 
 #### **2. Install Dependencies**  
